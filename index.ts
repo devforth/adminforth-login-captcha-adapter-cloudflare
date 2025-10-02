@@ -1,6 +1,14 @@
 import type { AdapterOptions } from "./types.js";
 import type { CaptchaAdapter } from "adminforth";
 
+declare global {
+  interface Window {
+    turnstile: {
+      render: (element: HTMLElement, options: { sitekey: string; callback: (token: string) => void }) => void;
+    };
+  }
+}
+
 
 export default class CaptchaAdapterCloudflare implements CaptchaAdapter {
   options: AdapterOptions;
