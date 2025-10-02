@@ -4,6 +4,7 @@ import type { CaptchaAdapter } from "adminforth";
 
 export default class CaptchaAdapterCloudflare implements CaptchaAdapter {
   options: AdapterOptions;
+  private token: string;
 
   constructor(options: AdapterOptions) {
     this.options = options;
@@ -21,11 +22,23 @@ export default class CaptchaAdapterCloudflare implements CaptchaAdapter {
     return 'turnstile-container';
   }
 
-  getToken(): Promise<string> | string { 
-    if (!(window as any).turnstile) {
-        throw new Error('Turnstile script not loaded');
+  getToken(): Promise<string> {
+    return Promise.resolve(this.token);
+  }
+
+  renderWidget(): void {
+    const el = document.getElementById("turnstile-container");
+
+    if (!el) {
+      throw new Error("Turnstile container not found");
     }
-    return (window as any).turnstile.getResponse("turnstile-container");
+
+    window.turnstile.render(el, {
+      sitekey: this.options.siteKey,
+      callback: (token) => {
+        this.token = token;
+      },
+    });
   }
 
   async validate(token: string, ip: string): Promise<Record<string, any>> {
