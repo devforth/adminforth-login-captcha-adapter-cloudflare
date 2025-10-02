@@ -34,19 +34,24 @@ export default class CaptchaAdapterCloudflare implements CaptchaAdapter {
     return Promise.resolve(this.token);
   }
 
-  renderWidget(): void {
-    const el = document.getElementById("turnstile-container");
-
-    if (!el) {
-      throw new Error("Turnstile container not found");
-    }
-
-    window.turnstile.render(el, {
-      sitekey: this.options.siteKey,
-      callback: (token) => {
-        this.token = token;
-      },
-    });
+  getRenderWidgetCode(): string {
+    return `
+      window.renderCaptchaWidget = function(containerId, siteKey, onSuccess) {
+        if (!window.turnstile) {
+          console.error('Turnstile script is not loaded');
+          return;
+        }
+        return window.turnstile.render('#' + containerId, {
+          sitekey: siteKey,
+          callback: function(token) {
+            console.log('Captcha token:', token);
+            if (typeof onSuccess === 'function') {
+              onSuccess(token);
+            }
+          }
+        });
+      };
+    `;
   }
 
   async validate(token: string, ip: string): Promise<Record<string, any>> {
