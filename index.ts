@@ -36,7 +36,7 @@ export default class CaptchaAdapterCloudflare implements CaptchaAdapter {
 
   getRenderWidgetCode(): string {
     return `
-      window.renderCaptchaWidget = function(containerId, siteKey, onSuccess) {
+      window.renderCaptchaWidgetCloudflare = function(containerId, siteKey, onSuccess) {
         if (!window.turnstile) {
           console.error('Turnstile script is not loaded');
           return;
@@ -44,7 +44,6 @@ export default class CaptchaAdapterCloudflare implements CaptchaAdapter {
         return window.turnstile.render('#' + containerId, {
           sitekey: siteKey,
           callback: function(token) {
-            console.log('Captcha token:', token);
             if (typeof onSuccess === 'function') {
               onSuccess(token);
             }
@@ -52,6 +51,10 @@ export default class CaptchaAdapterCloudflare implements CaptchaAdapter {
         });
       };
     `;
+  }
+
+  getRenderWidgetFunctionName(): string {
+    return 'renderCaptchaWidgetCloudflare';
   }
 
   async validate(token: string, ip: string): Promise<Record<string, any>> {
