@@ -14,7 +14,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "adminforth": "^2.4.0-next.184",
+    "adminforth": "^2.4.0-next.190",
     "axios": "^1.9.0",
     "file-type": "^20.5.0",
     "typescript": "^5.8.3"

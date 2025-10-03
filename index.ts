@@ -30,10 +30,6 @@ export default class CaptchaAdapterCloudflare implements CaptchaAdapter {
     return 'turnstile-container';
   }
 
-  getToken(): Promise<string> {
-    return Promise.resolve(this.token);
-  }
-
   getRenderWidgetCode(): string {
     return `
       window.renderCaptchaWidgetCloudflare = function(containerId, siteKey, onSuccess) {
